@@ -1,31 +1,32 @@
+
 <script setup>
 import { reactive } from "vue";
+import TodoButton from "./TodoButton.vue";
 
 const emit = defineEmits(["create-todo"]);
 
-// Reactive state untuk menyimpan todo dan status error
 const todo = reactive({
-  value: "",
+  todo: "",
   invalid: false,
   errMsg: "",
 });
 
 const createTodo = () => {
-  todo.invalid = false; // Reset status invalid
-  if (todo.value.trim() !== "") { // Trim untuk menghapus spasi
-    emit("create-todo", todo.value);
-    todo.value = ""; // Reset input setelah emit
+  todo.invalid = false;
+  if (todo.todo !== "") {
+    emit("create-todo", todo.todo);
+    todo.todo = "";
     return;
   }
-  todo.invalid = true; // Set status invalid jika kosong
+  todo.invalid = true;
   todo.errMsg = "Todo value cannot be empty!";
 };
 </script>
 
 <template>
   <div class="input-wrap" :class="{ 'input-err': todo.invalid }">
-    <input type="text" v-model="todo.value" /> <!-- Menggunakan todo.value -->
-    <button @click="createTodo">Create</button> <!-- Tidak perlu tanda kurung di sini -->
+    <input type="text" v-model="todo.todo" />
+    <TodoButton @click="createTodo()"/>
   </div>
   <p class="err-msg" v-if="todo.invalid">{{ todo.errMsg }}</p>
 </template>
@@ -37,7 +38,7 @@ const createTodo = () => {
   border: 2px solid #41b080;
 
   &.input-err {
-    border-color: red; // Warna border saat error
+    border-color: red;
   }
 
   &:focus-within {
@@ -55,16 +56,12 @@ const createTodo = () => {
     }
   }
 
-  button {
-    padding: 8px 16px;
-    border: none;
-  }
 }
 
 .err-msg {
   margin-top: 6px;
   font-size: 12px;
   text-align: center;
-  color: red; // Warna pesan error
+  color: red;
 }
 </style>

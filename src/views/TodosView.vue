@@ -1,6 +1,7 @@
 <script setup>
 import { uid } from "uid";
 import { ref } from "vue";
+import { Icon } from "@iconify/vue";
 import TodoCreator from "../components/TodoCreator.vue";
 import TodoItem from "../components/TodoItem.vue";
 
@@ -20,10 +21,13 @@ const createTodo = (todo) => {
   <main>
     <h1>Buat List</h1>
     <TodoCreator @create-todo="createTodo" />
-    <ul class="todo-list">
-      <!-- Tambahkan key dan prop todo -->
+    <ul class="todo-list" v-if="todoList.length > 0">
       <TodoItem v-for="todo in todoList" :key="todo.id" :todo="todo" />
     </ul>
+    <p class="todos-msg" v-else>
+      <Icon icon="cib:happycow" width="50" height="50" style="color: #36bfa8" />
+      <span>Engga punya list buat diberesin! Tambahin dong!</span>
+    </p>
   </main>
 </template>
 
@@ -40,6 +44,7 @@ main {
     margin-bottom: 16px;
     text-align: center;
   }
+
   .todo {
     flex: 1;
 
@@ -58,6 +63,15 @@ main {
     .icon {
       cursor: pointer;
     }
+  }
+
+  .todos-msg {
+    display: flex; /* Menambahkan Flexbox */
+    align-items: center;
+    justify-content: center; /* Memusatkan konten */
+    gap: 8px;
+    margin-top: 24px;
+    text-align: center; /* Memastikan teks juga terpusat */
   }
 }
 </style>

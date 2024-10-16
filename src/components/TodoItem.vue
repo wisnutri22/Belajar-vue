@@ -1,38 +1,57 @@
 <script setup>
 import { Icon } from "@iconify/vue";
+
 const props = defineProps({
   todo: {
     type: Object,
-    default: () => {},
+    default: () => ({}),
+  },
+  index: {
+    type: Number,
+    default: 0,
   },
 });
+
+// Define emits
+const emit = defineEmits(["edit-todo", "update-todo", "toggle-complete"]);
 </script>
 
 <template>
   <li>
-    <input type="checkbox" :checked="todo.isCompleted" />
+    <input 
+      type="checkbox" 
+      :checked="todo.isCompleted" 
+      @change="() => emit('toggle-complete', index)" 
+    />
     <div class="todo">
-      <input v-if="todo.isEditing" type="text" :value="todo.todo" />
-      <span v-else>
+      <input
+        v-if="todo.isEditing"
+        type="text"
+        :value="todo.todo"
+        @input="$emit('update-todo', $event.target.value, index)"
+      />
+      <span v-else :class="{'completed-todo' : todo.isCompleted}">
         {{ todo.todo }}
       </span>
     </div>
     <div class="todo-actions">
       <Icon
         v-if="todo.isEditing"
-        icon="system-uicons:check-circle"
+        icon="ph:check-circle"
+        class="icon check-icon"
+        color="41b080"
         width="22"
-        height="22"
-        style="color: #02e853"
+        @click="$emit('edit-todo', index)"
       />
       <Icon
-        v-if="!todo.isEditing"
+        v-else
         icon="ph:pencil-fill"
+        class="icon edit-icon"
+        color="41b080"
         width="22"
-        height="22"
-        style="color: #02e853"
+        @click="$emit('edit-todo', index)"
       />
-      <Icon v-if="!todo.isEditing" icon="ph:trash" width="22" height="22" style="color: #f95e5e" />
+      <Icon icon="ph:trash" class="icon trash-icon" color="f95e5e" width="22" />
     </div>
   </li>
 </template>
@@ -46,6 +65,12 @@ li {
   background-color: #f1f1f1;
   box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1),
     0 8px 10px -6px rgb(0 0 0 / 0.1);
+
+  &:hover {
+    .todo-actions {
+      opacity: 1;
+    }
+  }
 
   input[type="checkbox"] {
     appearance: none;
@@ -63,6 +88,9 @@ li {
   .todo {
     flex: 1;
 
+    .completed-todo {
+      text-decoration: line-through;
+    }
     input[type="text"] {
       width: 100%;
       padding: 2px 6px;
@@ -74,20 +102,10 @@ li {
     display: flex;
     gap: 6px;
     opacity: 0;
-    transition: opacity 150ms ease-in-out;
-  }
-
-  /* Show the icons only when hovering the checkbox */
-  input[type="checkbox"]:hover + .todo + .todo-actions {
-    opacity: 1;
-  }
-
-  &:hover .todo-actions {
-    opacity: 1;
-  }
-
-  .icon {
-    cursor: pointer;
+    transition: 150ms ease-in-out;
+    .icon {
+      cursor: pointer;
+    }
   }
 }
 </style>

@@ -9,11 +9,19 @@ const todoList = ref([]);
 
 const createTodo = (todo) => {
   todoList.value.push({
-    id: uid(), // Buat id unik untuk setiap todo
+    id: uid(), // Create a unique id for each todo
     todo,
     isCompleted: false,
     isEditing: null,
   });
+};
+
+const toggleTodoComplete = (todoPos) => {
+  todoList.value[todoPos].isCompleted = !todoList.value[todoPos].isCompleted;
+};
+
+const updateTodo = (updatedTodo, index) => {
+  todoList.value[index].todo = updatedTodo;
 };
 </script>
 
@@ -22,7 +30,14 @@ const createTodo = (todo) => {
     <h1>Buat List</h1>
     <TodoCreator @create-todo="createTodo" />
     <ul class="todo-list" v-if="todoList.length > 0">
-      <TodoItem v-for="todo in todoList" :key="todo.id" :todo="todo" />
+      <TodoItem 
+        v-for="(todo, index) in todoList"
+        :key="todo.id" 
+        :todo="todo"
+        :index="index"
+        @toggle-complete="toggleTodoComplete"
+        @update-todo="updateTodo" 
+      />
     </ul>
     <p class="todos-msg" v-else>
       <Icon icon="cib:happycow" width="50" height="50" style="color: #36bfa8" />
@@ -45,33 +60,13 @@ main {
     text-align: center;
   }
 
-  .todo {
-    flex: 1;
-
-    input[type="text"] {
-      width: 100%;
-      padding: 2px 6px;
-      border: 2px solid #41b080;
-    }
-  }
-
-  .todo-actions {
-    display: flex;
-    gap: 6px;
-    opacity: 0;
-    transition: 150ms ease-in-out;
-    .icon {
-      cursor: pointer;
-    }
-  }
-
   .todos-msg {
-    display: flex; /* Menambahkan Flexbox */
+    display: flex; /* Flexbox for centering */
     align-items: center;
-    justify-content: center; /* Memusatkan konten */
+    justify-content: center; /* Center the content */
     gap: 8px;
     margin-top: 24px;
-    text-align: center; /* Memastikan teks juga terpusat */
+    text-align: center; /* Center the text */
   }
 }
 </style>

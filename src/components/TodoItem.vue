@@ -13,15 +13,20 @@ const props = defineProps({
 });
 
 // Define emits
-const emit = defineEmits(["edit-todo", "update-todo", "toggle-complete"]);
+const emit = defineEmits([
+  "edit-todo",
+  "update-todo",
+  "toggle-complete",
+  "delete-todo",
+]);
 </script>
 
 <template>
   <li>
-    <input 
-      type="checkbox" 
-      :checked="todo.isCompleted" 
-      @change="() => emit('toggle-complete', index)" 
+    <input
+      type="checkbox"
+      :checked="todo.isCompleted"
+      @change="() => emit('toggle-complete', index)"
     />
     <div class="todo">
       <input
@@ -30,7 +35,7 @@ const emit = defineEmits(["edit-todo", "update-todo", "toggle-complete"]);
         :value="todo.todo"
         @input="$emit('update-todo', $event.target.value, index)"
       />
-      <span v-else :class="{'completed-todo' : todo.isCompleted}">
+      <span v-else :class="{ 'completed-todo': todo.isCompleted }">
         {{ todo.todo }}
       </span>
     </div>
@@ -51,7 +56,13 @@ const emit = defineEmits(["edit-todo", "update-todo", "toggle-complete"]);
         width="22"
         @click="$emit('edit-todo', index)"
       />
-      <Icon icon="ph:trash" class="icon trash-icon" color="f95e5e" width="22" />
+      <Icon
+        icon="ph:trash"
+        class="icon trash-icon"
+        color="f95e5e"
+        width="22"
+        @click="$emit('delete-todo', todo.id)"
+      />
     </div>
   </li>
 </template>
